@@ -259,18 +259,6 @@ define C-function tickit-rect-init-bounded
   c-name: "tickit_rect_init_bounded";
 end;
 
-define C-function tickit-rect-bottom
-  input parameter rect_ :: <TickitRect*>;
-  result res :: <C-signed-int>;
-  c-name: "tickit_rect_bottom";
-end;
-
-define C-function tickit-rect-right
-  input parameter rect_ :: <TickitRect*>;
-  result res :: <C-signed-int>;
-  c-name: "tickit_rect_right";
-end;
-
 define C-function tickit-rect-intersect
   input parameter dst_ :: <TickitRect*>;
   input parameter a_ :: <TickitRect*>;
@@ -712,40 +700,6 @@ define C-function tickit-string-ncountmore
   c-name: "tickit_string_ncountmore";
 end;
 
-define C-function tickit-stringpos-zero
-  input parameter pos_ :: <TickitStringPos*>;
-  c-name: "tickit_stringpos_zero";
-end;
-
-define C-function tickit-stringpos-limit-none
-  input parameter pos_ :: <TickitStringPos*>;
-  c-name: "tickit_stringpos_limit_none";
-end;
-
-define C-function tickit-stringpos-limit-bytes
-  input parameter pos_ :: <TickitStringPos*>;
-  input parameter bytes_ :: <C-size-t>;
-  c-name: "tickit_stringpos_limit_bytes";
-end;
-
-define C-function tickit-stringpos-limit-codepoints
-  input parameter pos_ :: <TickitStringPos*>;
-  input parameter codepoints_ :: <C-signed-int>;
-  c-name: "tickit_stringpos_limit_codepoints";
-end;
-
-define C-function tickit-stringpos-limit-graphemes
-  input parameter pos_ :: <TickitStringPos*>;
-  input parameter graphemes_ :: <C-signed-int>;
-  c-name: "tickit_stringpos_limit_graphemes";
-end;
-
-define C-function tickit-stringpos-limit-columns
-  input parameter pos_ :: <TickitStringPos*>;
-  input parameter columns_ :: <C-signed-int>;
-  c-name: "tickit_stringpos_limit_columns";
-end;
-
 define C-function tickit-string-mbswidth
   input parameter str_ :: <c-string>;
   result res :: <C-signed-int>;
@@ -1010,14 +964,6 @@ define C-function tickit-renderbuffer-get-cell-text
   input parameter len_ :: <C-size-t>;
   result res :: <C-size-t>;
   c-name: "tickit_renderbuffer_get_cell_text";
-end;
-
-define C-function tickit-renderbuffer-get-cell-linemask
-  input parameter rb_ :: <TickitRenderBuffer*>;
-  input parameter line_ :: <C-signed-int>;
-  input parameter col_ :: <C-signed-int>;
-  result res :: <TickitRenderBufferLineMask>;
-  c-name: "tickit_renderbuffer_get_cell_linemask";
 end;
 
 define C-function tickit-renderbuffer-get-cell-pen
