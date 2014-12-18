@@ -82,40 +82,40 @@ end;
 define C-function tickit-pen-has-attr
   input parameter pen_ :: <TickitPen*>;
   input parameter attr_ :: <TickitPenAttr>;
-  result res :: <C-signed-int>;
+  result res :: <C-boolean>;
   c-name: "tickit_pen_has_attr";
 end;
 
 define C-function tickit-pen-is-nonempty
   input parameter pen_ :: <TickitPen*>;
-  result res :: <C-signed-int>;
+  result res :: <C-boolean>;
   c-name: "tickit_pen_is_nonempty";
 end;
 
 define C-function tickit-pen-nondefault-attr
   input parameter pen_ :: <TickitPen*>;
   input parameter attr_ :: <TickitPenAttr>;
-  result res :: <C-signed-int>;
+  result res :: <C-boolean>;
   c-name: "tickit_pen_nondefault_attr";
 end;
 
 define C-function tickit-pen-is-nondefault
   input parameter pen_ :: <TickitPen*>;
-  result res :: <C-signed-int>;
+  result res :: <C-boolean>;
   c-name: "tickit_pen_is_nondefault";
 end;
 
 define C-function tickit-pen-get-bool-attr
   input parameter pen_ :: <TickitPen*>;
   input parameter attr_ :: <TickitPenAttr>;
-  result res :: <C-signed-int>;
+  result res :: <C-boolean>;
   c-name: "tickit_pen_get_bool_attr";
 end;
 
 define C-function tickit-pen-set-bool-attr
   input parameter pen_ :: <TickitPen*>;
   input parameter attr_ :: <TickitPenAttr>;
-  input parameter val_ :: <C-signed-int>;
+  input parameter val_ :: <C-boolean>;
   c-name: "tickit_pen_set_bool_attr";
 end;
 
@@ -170,14 +170,14 @@ define C-function tickit-pen-equiv-attr
   input parameter a_ :: <TickitPen*>;
   input parameter b_ :: <TickitPen*>;
   input parameter attr_ :: <TickitPenAttr>;
-  result res :: <C-signed-int>;
+  result res :: <C-boolean>;
   c-name: "tickit_pen_equiv_attr";
 end;
 
 define C-function tickit-pen-equiv
   input parameter a_ :: <TickitPen*>;
   input parameter b_ :: <TickitPen*>;
-  result res :: <C-signed-int>;
+  result res :: <C-boolean>;
   c-name: "tickit_pen_equiv";
 end;
 
@@ -258,24 +258,24 @@ define C-function tickit-rect-init-bounded
 end;
 
 define C-function tickit-rect-intersect
-  input parameter dst_ :: <TickitRect*>;
+  output parameter dst_ :: <TickitRect*>;
   input parameter a_ :: <TickitRect*>;
   input parameter b_ :: <TickitRect*>;
-  result res :: <C-signed-int>;
+  result res :: <C-boolean>;
   c-name: "tickit_rect_intersect";
 end;
 
 define C-function tickit-rect-intersects
   input parameter a_ :: <TickitRect*>;
   input parameter b_ :: <TickitRect*>;
-  result res :: <C-signed-int>;
+  result res :: <C-boolean>;
   c-name: "tickit_rect_intersects";
 end;
 
 define C-function tickit-rect-contains
   input parameter large_ :: <TickitRect*>;
   input parameter small_ :: <TickitRect*>;
-  result res :: <C-signed-int>;
+  result res :: <C-boolean>;
   c-name: "tickit_rect_contains";
 end;
 
@@ -346,14 +346,14 @@ end;
 define C-function tickit-rectset-intersects
   input parameter trs_ :: <TickitRectSet*>;
   input parameter rect_ :: <TickitRect*>;
-  result res :: <C-signed-int>;
+  result res :: <C-boolean>;
   c-name: "tickit_rectset_intersects";
 end;
 
 define C-function tickit-rectset-contains
   input parameter trs_ :: <TickitRectSet*>;
   input parameter rect_ :: <TickitRect*>;
-  result res :: <C-signed-int>;
+  result res :: <C-boolean>;
   c-name: "tickit_rectset_contains";
 end;
 
@@ -447,7 +447,7 @@ end;
 
 define C-function tickit-term-set-utf8
   input parameter tt_ :: <TickitTerm*>;
-  input parameter utf8_ :: <C-signed-int>;
+  input parameter utf8_ :: <C-boolean>;
   c-name: "tickit_term_set_utf8";
 end;
 
@@ -478,8 +478,8 @@ end;
 define C-pointer-type <int*> => <C-signed-int>;
 define C-function tickit-term-get-size
   input parameter tt_ :: <TickitTerm*>;
-  input parameter lines_ :: <int*>;
-  input parameter cols_ :: <int*>;
+  output parameter lines_ :: <int*>;
+  output parameter cols_ :: <int*>;
   c-name: "tickit_term_get_size";
 end;
 
@@ -544,7 +544,7 @@ define C-function tickit-term-goto
   input parameter tt_ :: <TickitTerm*>;
   input parameter line_ :: <C-signed-int>;
   input parameter col_ :: <C-signed-int>;
-  result res :: <C-signed-int>;
+  result res :: <C-boolean>;
   c-name: "tickit_term_goto";
 end;
 
@@ -563,7 +563,7 @@ define C-function tickit-term-scrollrect
   input parameter cols_ :: <C-signed-int>;
   input parameter downward_ :: <C-signed-int>;
   input parameter rightward_ :: <C-signed-int>;
-  result res :: <C-signed-int>;
+  result res :: <C-boolean>;
   c-name: "tickit_term_scrollrect";
 end;
 
@@ -617,8 +617,8 @@ define constant $TICKIT-TERM-CURSORSHAPE-LEFT-BAR = 3;
 define C-function tickit-term-getctl-int
   input parameter tt_ :: <TickitTerm*>;
   input parameter ctl_ :: <TickitTermCtl>;
-  input parameter value_ :: <int*>;
-  result res :: <C-signed-int>;
+  output parameter value_ :: <int*>;
+  result res :: <C-boolean>;
   c-name: "tickit_term_getctl_int";
 end;
 
@@ -626,7 +626,7 @@ define C-function tickit-term-setctl-int
   input parameter tt_ :: <TickitTerm*>;
   input parameter ctl_ :: <TickitTermCtl>;
   input parameter value_ :: <C-signed-int>;
-  result res :: <C-signed-int>;
+  result res :: <C-boolean>;
   c-name: "tickit_term_setctl_int";
 end;
 
@@ -634,7 +634,7 @@ define C-function tickit-term-setctl-str
   input parameter tt_ :: <TickitTerm*>;
   input parameter ctl_ :: <TickitTermCtl>;
   input parameter value_ :: <c-string>;
-  result res :: <C-signed-int>;
+  result res :: <C-boolean>;
   c-name: "tickit_term_setctl_str";
 end;
 
@@ -732,8 +732,8 @@ end;
 
 define C-function tickit-renderbuffer-get-size
   input parameter rb_ :: <TickitRenderBuffer*>;
-  input parameter lines_ :: <int*>;
-  input parameter cols_ :: <int*>;
+  output parameter lines_ :: <int*>;
+  output parameter cols_ :: <int*>;
   c-name: "tickit_renderbuffer_get_size";
 end;
 
@@ -758,7 +758,7 @@ end;
 
 define C-function tickit-renderbuffer-has-cursorpos
   input parameter rb_ :: <TickitRenderBuffer*>;
-  result res :: <C-signed-int>;
+  result res :: <C-boolean>;
   c-name: "tickit_renderbuffer_has_cursorpos";
 end;
 
