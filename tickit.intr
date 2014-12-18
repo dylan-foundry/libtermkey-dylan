@@ -3,6 +3,7 @@ module: tickit
 define interface
   #include "tickit.h",
     exclude: {
+      "tickit_pen_new_attrs",
       "tickit_renderbuffer_get_cell_linemask",
       "tickit_rect_bottom",
       "tickit_rect_right",
@@ -11,7 +12,9 @@ define interface
       "tickit_stringpos_limit_columns",
       "tickit_stringpos_limit_graphemes",
       "tickit_stringpos_limit_none",
-      "tickit_stringpos_zero"
+      "tickit_stringpos_zero",
+      "tickit_term_printf",
+      "tickit_term_vprintf"
     },
     equate: {
       "char *" => <c-string>

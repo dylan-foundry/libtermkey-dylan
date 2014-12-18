@@ -62,12 +62,6 @@ define C-function tickit-pen-new
   c-name: "tickit_pen_new";
 end;
 
-define C-function tickit-pen-new-attrs
-  input parameter attr_ :: <TickitPenAttr>;
-  result res :: <TickitPen*>;
-  c-name: "tickit_pen_new_attrs";
-end;
-
 define C-function tickit-pen-clone
   input parameter orig_ :: <TickitPen*>;
   result res :: <TickitPen*>;
@@ -523,21 +517,6 @@ define C-function tickit-term-printn
   input parameter str_ :: <c-string>;
   input parameter len_ :: <C-size-t>;
   c-name: "tickit_term_printn";
-end;
-
-define C-function tickit-term-printf
-  input parameter tt_ :: <TickitTerm*>;
-  input parameter fmt_ :: <c-string>;
-  c-name: "tickit_term_printf";
-end;
-
-define constant <va-list> = <C-void*>;
-
-define C-function tickit-term-vprintf
-  input parameter tt_ :: <TickitTerm*>;
-  input parameter fmt_ :: <c-string>;
-  input parameter args_ :: <va-list>;
-  c-name: "tickit_term_vprintf";
 end;
 
 define C-function tickit-term-goto
