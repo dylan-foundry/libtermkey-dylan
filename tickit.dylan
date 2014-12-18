@@ -196,9 +196,7 @@ define C-function tickit-pen-copy
 end;
 
 define C-pointer-type <TickitEvent*> => <TickitEvent>;
-define constant <anonymous-238> = <C-function-pointer>;
-define constant <TickitPenEventFn> = <anonymous-238>;
-
+define constant <TickitPenEventFn> = <C-function-pointer>;
 define C-pointer-type <TickitPenEventFn*> => <TickitPenEventFn>;
 define C-function tickit-pen-bind-event
   input parameter tt_ :: <TickitPen*>;
@@ -363,9 +361,7 @@ define C-struct <TickitTerm>
 end;
 
 define C-pointer-type <TickitTerm*> => <TickitTerm>;
-define constant <anonymous-263> = <C-function-pointer>;
-define constant <TickitTermOutputFunc> = <anonymous-263>;
-
+define constant <TickitTermOutputFunc> = <C-function-pointer>;
 define C-function tickit-term-new
   result res :: <TickitTerm*>;
   c-name: "tickit_term_new";
@@ -499,9 +495,7 @@ define C-function tickit-term-refresh-size
   c-name: "tickit_term_refresh_size";
 end;
 
-define constant <anonymous-285> = <C-function-pointer>;
-define constant <TickitTermEventFn> = <anonymous-285>;
-
+define constant <TickitTermEventFn> = <C-function-pointer>;
 define C-pointer-type <TickitTermEventFn*> => <TickitTermEventFn>;
 define C-function tickit-term-bind-event
   input parameter tt_ :: <TickitTerm*>;
