@@ -145,7 +145,7 @@ define C-function tickit-pen-set-colour-attr-desc
   input parameter pen_ :: <TickitPen*>;
   input parameter attr_ :: <TickitPenAttr>;
   input parameter value_ :: <c-string>;
-  result res :: <C-signed-int>;
+  result res :: <C-boolean>;
   c-name: "tickit_pen_set_colour_attr_desc";
 end;
 
@@ -185,7 +185,7 @@ end;
 define C-function tickit-pen-copy
   input parameter dst_ :: <TickitPen*>;
   input parameter src_ :: <TickitPen*>;
-  input parameter overwrite_ :: <C-signed-int>;
+  input parameter overwrite_ :: <C-boolean>;
   c-name: "tickit_pen_copy";
 end;
 
@@ -404,16 +404,10 @@ define C-function tickit-term-set-output-buffer
   c-name: "tickit_term_set_output_buffer";
 end;
 
-define C-struct <timeval>
-  slot timeval$tv-sec :: <C-signed-long>;
-  slot timeval$tv-usec :: <C-signed-int>;
-end;
-
-define C-pointer-type <timeval*> => <timeval>;
 define C-function tickit-term-await-started
   input parameter tt_ :: <TickitTerm*>;
-  input parameter timeout_ :: <timeval*>;
-  c-name: "tickit_term_await_started";
+  input parameter msec_ :: <C-signed-long>;
+  c-name: "tickit_term_await_started_msec";
 end;
 
 define C-function tickit-term-flush
@@ -460,13 +454,13 @@ end;
 define C-function tickit-term-input-check-timeout
   input parameter tt_ :: <TickitTerm*>;
   result res :: <C-signed-int>;
-  c-name: "tickit_term_input_check_timeout";
+  c-name: "tickit_term_input_check_timeout_msec";
 end;
 
 define C-function tickit-term-input-wait
   input parameter tt_ :: <TickitTerm*>;
-  input parameter timeout_ :: <timeval*>;
-  c-name: "tickit_term_input_wait";
+  input parameter msec_ :: <C-signed-long>;
+  c-name: "tickit_term_input_wait_msec";
 end;
 
 define C-pointer-type <int*> => <C-signed-int>;
@@ -948,7 +942,7 @@ define C-function tickit-renderbuffer-get-cell-pen
 end;
 
 define C-struct <TickitRenderBufferSpanInfo>
-  slot TickitRenderBufferSpanInfo$is-active :: <C-signed-int>;
+  slot TickitRenderBufferSpanInfo$is-active :: <C-boolean>;
   slot TickitRenderBufferSpanInfo$n-columns :: <C-signed-int>;
   slot TickitRenderBufferSpanInfo$text :: <c-string>;
   slot TickitRenderBufferSpanInfo$len :: <C-size-t>;

@@ -105,8 +105,6 @@ define module tickit
     <TickitTermOutputFunc*>,
     <TickitTermOutputFunc>,
     <int*>,
-    <timeval*>,
-    <timeval>,
     TickitEvent$button,
     TickitEvent$button-setter,
     TickitEvent$col,
@@ -276,8 +274,4 @@ define module tickit
     tickit-term-setctl-str,
     tickit-term-setpen,
     tickit-term-unbind-event-id,
-    timeval$tv-sec,
-    timeval$tv-sec-setter,
-    timeval$tv-usec,
-    timeval$tv-usec-setter;
 end module;
