@@ -1,5 +1,10 @@
 module: tickit
 
+define constant <TickitMaybeBool> = <C-int>;
+define constant $TICKIT-NO = 0;
+define constant $TICKIT-YES = 1;
+define constant $TICKIT-MAYBE = -1;
+
 define constant <TickitEventType> = <C-int>;
 define constant $TICKIT-EV-RESIZE = 1;
 define constant $TICKIT-EV-KEY = 2;
@@ -429,7 +434,7 @@ end;
 
 define C-function tickit-term-get-utf8
   input parameter tt_ :: <TickitTerm*>;
-  result res :: <C-signed-int>;
+  result res :: <TickitMaybeBool>;
   c-name: "tickit_term_get_utf8";
 end;
 
@@ -560,7 +565,7 @@ end;
 define C-function tickit-term-erasech
   input parameter tt_ :: <TickitTerm*>;
   input parameter count_ :: <C-signed-int>;
-  input parameter moveend_ :: <C-signed-int>;
+  input parameter moveend_ :: <TickitMaybeBool>;
   c-name: "tickit_term_erasech";
 end;
 
