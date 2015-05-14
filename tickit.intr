@@ -1,7 +1,10 @@
 module: tickit
 
 define interface
-  #include "tickit.h",
+  #include {
+      "tickit.h",
+      "tickit-window.h"
+    },
     exclude: {
       "tickit_pen_new_attrs",
       "tickit_renderbuffer_get_cell_linemask",

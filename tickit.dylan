@@ -1,45 +1,19 @@
 module: tickit
 
-define constant <TickitMaybeBool> = <C-int>;
-define constant $TICKIT-NO = 0;
-define constant $TICKIT-YES = 1;
-define constant $TICKIT-MAYBE = -1;
-
 define constant <TickitEventType> = <C-int>;
 define constant $TICKIT-EV-RESIZE = 1;
 define constant $TICKIT-EV-KEY = 2;
 define constant $TICKIT-EV-MOUSE = 4;
 define constant $TICKIT-EV-CHANGE = 8;
+define constant $TICKIT-EV-GEOMCHANGE = 16;
+define constant $TICKIT-EV-EXPOSE = 32;
+define constant $TICKIT-EV-FOCUS = 64;
 define constant $TICKIT-EV-UNBIND = 0;
 
-define constant <TickitKeyEventType> = <C-int>;
-define constant $TICKIT-KEYEV-KEY = 1;
-define constant $TICKIT-KEYEV-TEXT = 2;
-
-define constant <TickitMouseEventType> = <C-int>;
-define constant $TICKIT-MOUSEEV-PRESS = 1;
-define constant $TICKIT-MOUSEEV-DRAG = 2;
-define constant $TICKIT-MOUSEEV-RELEASE = 3;
-define constant $TICKIT-MOUSEEV-WHEEL = 4;
-
-define constant $TICKIT-MOUSEWHEEL-UP = 1;
-define constant $TICKIT-MOUSEWHEEL-DOWN = 2;
-
-define constant $TICKIT-MOD-SHIFT = 1;
-define constant $TICKIT-MOD-ALT = 2;
-define constant $TICKIT-MOD-CTRL = 4;
-
-define C-pointer-type <c-string> => <C-signed-char>;
-define C-struct <TickitEvent>
-  slot TickitEvent$lines :: <C-signed-int>;
-  slot TickitEvent$cols :: <C-signed-int>;
-  slot TickitEvent$type :: <C-signed-int>;
-  slot TickitEvent$str :: <c-string>;
-  slot TickitEvent$button :: <C-signed-int>;
-  slot TickitEvent$line :: <C-signed-int>;
-  slot TickitEvent$col :: <C-signed-int>;
-  slot TickitEvent$mod :: <C-signed-int>;
-end;
+define constant <TickitMaybeBool> = <C-int>;
+define constant $TICKIT-NO = 0;
+define constant $TICKIT-YES = 1;
+define constant $TICKIT-MAYBE = -1;
 
 define C-struct <TickitPen>
 end;
@@ -146,6 +120,7 @@ define C-function tickit-pen-set-colour-attr
   c-name: "tickit_pen_set_colour_attr";
 end;
 
+define C-pointer-type <c-string> => <C-signed-char>;
 define C-function tickit-pen-set-colour-attr-desc
   input parameter pen_ :: <TickitPen*>;
   input parameter attr_ :: <TickitPenAttr>;
@@ -194,7 +169,6 @@ define C-function tickit-pen-copy
   c-name: "tickit_pen_copy";
 end;
 
-define C-pointer-type <TickitEvent*> => <TickitEvent>;
 define constant <TickitPenEventFn> = <C-function-pointer>;
 define C-pointer-type <TickitPenEventFn*> => <TickitPenEventFn>;
 define C-function tickit-pen-bind-event
@@ -231,10 +205,10 @@ define C-function tickit-pen-lookup-attr
 end;
 
 define C-struct <TickitRect>
-  slot TickitRect$top :: <C-signed-int>;
-  slot TickitRect$left :: <C-signed-int>;
-  slot TickitRect$lines :: <C-signed-int>;
-  slot TickitRect$cols :: <C-signed-int>;
+  sealed slot TickitRect$top :: <C-signed-int>;
+  sealed slot TickitRect$left :: <C-signed-int>;
+  sealed slot TickitRect$lines :: <C-signed-int>;
+  sealed slot TickitRect$cols :: <C-signed-int>;
 end;
 
 define C-pointer-type <TickitRect*> => <TickitRect>;
@@ -254,6 +228,13 @@ define C-function tickit-rect-init-bounded
   input parameter bottom_ :: <C-signed-int>;
   input parameter right_ :: <C-signed-int>;
   c-name: "tickit_rect_init_bounded";
+end;
+
+define C-function tickit-rect-translate
+  input parameter rect_ :: <TickitRect*>;
+  input parameter downward_ :: <C-signed-int>;
+  input parameter rightward_ :: <C-signed-int>;
+  c-name: "tickit_rect_translate";
 end;
 
 define C-function tickit-rect-intersect
@@ -535,10 +516,7 @@ end;
 
 define C-function tickit-term-scrollrect
   input parameter tt_ :: <TickitTerm*>;
-  input parameter top_ :: <C-signed-int>;
-  input parameter left_ :: <C-signed-int>;
-  input parameter lines_ :: <C-signed-int>;
-  input parameter cols_ :: <C-signed-int>;
+  input parameter rect_ :: <TickitRect>;
   input parameter downward_ :: <C-signed-int>;
   input parameter rightward_ :: <C-signed-int>;
   result res :: <C-boolean>;
@@ -631,10 +609,10 @@ define C-function tickit-string-putchar
 end;
 
 define C-struct <TickitStringPos>
-  slot TickitStringPos$bytes :: <C-size-t>;
-  slot TickitStringPos$codepoints :: <C-signed-int>;
-  slot TickitStringPos$graphemes :: <C-signed-int>;
-  slot TickitStringPos$columns :: <C-signed-int>;
+  sealed slot TickitStringPos$bytes :: <C-size-t>;
+  sealed slot TickitStringPos$codepoints :: <C-signed-int>;
+  sealed slot TickitStringPos$graphemes :: <C-signed-int>;
+  sealed slot TickitStringPos$columns :: <C-signed-int>;
 end;
 
 define C-pointer-type <TickitStringPos*> => <TickitStringPos>;
@@ -789,13 +767,13 @@ define C-function tickit-renderbuffer-skip-at
   input parameter rb_ :: <TickitRenderBuffer*>;
   input parameter line_ :: <C-signed-int>;
   input parameter col_ :: <C-signed-int>;
-  input parameter len_ :: <C-signed-int>;
+  input parameter cols_ :: <C-signed-int>;
   c-name: "tickit_renderbuffer_skip_at";
 end;
 
 define C-function tickit-renderbuffer-skip
   input parameter rb_ :: <TickitRenderBuffer*>;
-  input parameter len_ :: <C-signed-int>;
+  input parameter cols_ :: <C-signed-int>;
   c-name: "tickit_renderbuffer_skip";
 end;
 
@@ -815,6 +793,17 @@ define C-function tickit-renderbuffer-text-at
   c-name: "tickit_renderbuffer_text_at";
 end;
 
+define C-function tickit-renderbuffer-textn-at
+  input parameter rb_ :: <TickitRenderBuffer*>;
+  input parameter line_ :: <C-signed-int>;
+  input parameter col_ :: <C-signed-int>;
+  input parameter text_ :: <c-string>;
+  input parameter len_ :: <C-size-t>;
+  input parameter pen_ :: <TickitPen*>;
+  result res :: <C-signed-int>;
+  c-name: "tickit_renderbuffer_textn_at";
+end;
+
 define C-function tickit-renderbuffer-text
   input parameter rb_ :: <TickitRenderBuffer*>;
   input parameter text_ :: <c-string>;
@@ -823,18 +812,27 @@ define C-function tickit-renderbuffer-text
   c-name: "tickit_renderbuffer_text";
 end;
 
+define C-function tickit-renderbuffer-textn
+  input parameter rb_ :: <TickitRenderBuffer*>;
+  input parameter text_ :: <c-string>;
+  input parameter len_ :: <C-size-t>;
+  input parameter pen_ :: <TickitPen*>;
+  result res :: <C-signed-int>;
+  c-name: "tickit_renderbuffer_textn";
+end;
+
 define C-function tickit-renderbuffer-erase-at
   input parameter rb_ :: <TickitRenderBuffer*>;
   input parameter line_ :: <C-signed-int>;
   input parameter col_ :: <C-signed-int>;
-  input parameter len_ :: <C-signed-int>;
+  input parameter cols_ :: <C-signed-int>;
   input parameter pen_ :: <TickitPen*>;
   c-name: "tickit_renderbuffer_erase_at";
 end;
 
 define C-function tickit-renderbuffer-erase
   input parameter rb_ :: <TickitRenderBuffer*>;
-  input parameter len_ :: <C-signed-int>;
+  input parameter cols_ :: <C-signed-int>;
   input parameter pen_ :: <TickitPen*>;
   c-name: "tickit_renderbuffer_erase";
 end;
@@ -913,11 +911,17 @@ define C-function tickit-renderbuffer-flush-to-term
   c-name: "tickit_renderbuffer_flush_to_term";
 end;
 
+define C-function tickit-renderbuffer-blit
+  input parameter dst_ :: <TickitRenderBuffer*>;
+  input parameter src_ :: <TickitRenderBuffer*>;
+  c-name: "tickit_renderbuffer_blit";
+end;
+
 define C-struct <TickitRenderBufferLineMask>
-  slot TickitRenderBufferLineMask$north :: <C-signed-char>;
-  slot TickitRenderBufferLineMask$south :: <C-signed-char>;
-  slot TickitRenderBufferLineMask$east :: <C-signed-char>;
-  slot TickitRenderBufferLineMask$west :: <C-signed-char>;
+  sealed slot TickitRenderBufferLineMask$north :: <C-signed-char>;
+  sealed slot TickitRenderBufferLineMask$south :: <C-signed-char>;
+  sealed slot TickitRenderBufferLineMask$east :: <C-signed-char>;
+  sealed slot TickitRenderBufferLineMask$west :: <C-signed-char>;
 end;
 
 define C-function tickit-renderbuffer-get-cell-active
@@ -947,11 +951,11 @@ define C-function tickit-renderbuffer-get-cell-pen
 end;
 
 define C-struct <TickitRenderBufferSpanInfo>
-  slot TickitRenderBufferSpanInfo$is-active :: <C-boolean>;
-  slot TickitRenderBufferSpanInfo$n-columns :: <C-signed-int>;
-  slot TickitRenderBufferSpanInfo$text :: <c-string>;
-  slot TickitRenderBufferSpanInfo$len :: <C-size-t>;
-  slot TickitRenderBufferSpanInfo$pen :: <TickitPen*>;
+  sealed slot TickitRenderBufferSpanInfo$is-active :: <C-boolean>;
+  sealed slot TickitRenderBufferSpanInfo$n-columns :: <C-signed-int>;
+  sealed slot TickitRenderBufferSpanInfo$text :: <c-string>;
+  sealed slot TickitRenderBufferSpanInfo$len :: <C-size-t>;
+  sealed slot TickitRenderBufferSpanInfo$pen :: <TickitPen*>;
 end;
 
 define C-pointer-type <TickitRenderBufferSpanInfo*> => <TickitRenderBufferSpanInfo>;
@@ -964,5 +968,309 @@ define C-function tickit-renderbuffer-get-span
   input parameter len_ :: <C-size-t>;
   result res :: <C-size-t>;
   c-name: "tickit_renderbuffer_get_span";
+end;
+
+define C-struct <TickitWindow>
+end;
+
+define C-struct <TickitResizeEventInfo>
+  sealed slot TickitResizeEventInfo$lines :: <C-signed-int>;
+  sealed slot TickitResizeEventInfo$cols :: <C-signed-int>;
+end;
+
+define constant <TickitKeyEventType> = <C-int>;
+define constant $TICKIT-KEYEV-KEY = 1;
+define constant $TICKIT-KEYEV-TEXT = 2;
+
+define C-struct <TickitKeyEventInfo>
+  sealed slot TickitKeyEventInfo$type :: <TickitKeyEventType>;
+  sealed slot TickitKeyEventInfo$mod :: <C-signed-int>;
+  sealed slot TickitKeyEventInfo$str :: <c-string>;
+end;
+
+define constant <TickitMouseEventType> = <C-int>;
+define constant $TICKIT-MOUSEEV-PRESS = 1;
+define constant $TICKIT-MOUSEEV-DRAG = 2;
+define constant $TICKIT-MOUSEEV-RELEASE = 3;
+define constant $TICKIT-MOUSEEV-WHEEL = 4;
+
+define constant $TICKIT-MOUSEWHEEL-UP = 1;
+define constant $TICKIT-MOUSEWHEEL-DOWN = 2;
+
+define C-struct <TickitMouseEventInfo>
+  sealed slot TickitMouseEventInfo$type :: <TickitMouseEventType>;
+  sealed slot TickitMouseEventInfo$button :: <C-signed-int>;
+  sealed slot TickitMouseEventInfo$mod :: <C-signed-int>;
+  sealed slot TickitMouseEventInfo$line :: <C-signed-int>;
+  sealed slot TickitMouseEventInfo$col :: <C-signed-int>;
+end;
+
+define constant $TICKIT-MOD-SHIFT = 1;
+define constant $TICKIT-MOD-ALT = 2;
+define constant $TICKIT-MOD-CTRL = 4;
+
+define C-pointer-type <TickitWindow*> => <TickitWindow>;
+define C-function tickit-window-new-root
+  input parameter term_ :: <TickitTerm*>;
+  result res :: <TickitWindow*>;
+  c-name: "tickit_window_new_root";
+end;
+
+define C-function tickit-window-new-subwindow
+  input parameter parent_ :: <TickitWindow*>;
+  input parameter top_ :: <C-signed-int>;
+  input parameter left_ :: <C-signed-int>;
+  input parameter lines_ :: <C-signed-int>;
+  input parameter cols_ :: <C-signed-int>;
+  result res :: <TickitWindow*>;
+  c-name: "tickit_window_new_subwindow";
+end;
+
+define C-function tickit-window-new-hidden-subwindow
+  input parameter parent_ :: <TickitWindow*>;
+  input parameter top_ :: <C-signed-int>;
+  input parameter left_ :: <C-signed-int>;
+  input parameter lines_ :: <C-signed-int>;
+  input parameter cols_ :: <C-signed-int>;
+  result res :: <TickitWindow*>;
+  c-name: "tickit_window_new_hidden_subwindow";
+end;
+
+define C-function tickit-window-new-float
+  input parameter parent_ :: <TickitWindow*>;
+  input parameter top_ :: <C-signed-int>;
+  input parameter left_ :: <C-signed-int>;
+  input parameter lines_ :: <C-signed-int>;
+  input parameter cols_ :: <C-signed-int>;
+  result res :: <TickitWindow*>;
+  c-name: "tickit_window_new_float";
+end;
+
+define C-function tickit-window-new-popup
+  input parameter parent_ :: <TickitWindow*>;
+  input parameter top_ :: <C-signed-int>;
+  input parameter left_ :: <C-signed-int>;
+  input parameter lines_ :: <C-signed-int>;
+  input parameter cols_ :: <C-signed-int>;
+  result res :: <TickitWindow*>;
+  c-name: "tickit_window_new_popup";
+end;
+
+define C-function tickit-window-parent
+  input parameter win_ :: <TickitWindow*>;
+  result res :: <TickitWindow*>;
+  c-name: "tickit_window_parent";
+end;
+
+define C-function tickit-window-root
+  input parameter win_ :: <TickitWindow*>;
+  result res :: <TickitWindow*>;
+  c-name: "tickit_window_root";
+end;
+
+define C-function tickit-window-destroy
+  input parameter win_ :: <TickitWindow*>;
+  c-name: "tickit_window_destroy";
+end;
+
+define C-function tickit-window-tick
+  input parameter win_ :: <TickitWindow*>;
+  c-name: "tickit_window_tick";
+end;
+
+define constant <TickitWindowEventFn> = <C-function-pointer>;
+define C-pointer-type <TickitWindowEventFn*> => <TickitWindowEventFn>;
+define C-function tickit-window-bind-event
+  input parameter win_ :: <TickitWindow*>;
+  input parameter ev_ :: <TickitEventType>;
+  input parameter fn_ :: <TickitWindowEventFn*>;
+  input parameter data_ :: <C-void*>;
+  result res :: <C-signed-int>;
+  c-name: "tickit_window_bind_event";
+end;
+
+define C-function tickit-window-unbind-event-id
+  input parameter win_ :: <TickitWindow*>;
+  input parameter id_ :: <C-signed-int>;
+  c-name: "tickit_window_unbind_event_id";
+end;
+
+define C-function tickit-window-raise
+  input parameter win_ :: <TickitWindow*>;
+  c-name: "tickit_window_raise";
+end;
+
+define C-function tickit-window-raise-to-front
+  input parameter win_ :: <TickitWindow*>;
+  c-name: "tickit_window_raise_to_front";
+end;
+
+define C-function tickit-window-lower
+  input parameter win_ :: <TickitWindow*>;
+  c-name: "tickit_window_lower";
+end;
+
+define C-function tickit-window-lower-to-back
+  input parameter win_ :: <TickitWindow*>;
+  c-name: "tickit_window_lower_to_back";
+end;
+
+define C-function tickit-window-show
+  input parameter win_ :: <TickitWindow*>;
+  c-name: "tickit_window_show";
+end;
+
+define C-function tickit-window-hide
+  input parameter win_ :: <TickitWindow*>;
+  c-name: "tickit_window_hide";
+end;
+
+define C-function tickit-window-is-visible
+  input parameter win_ :: <TickitWindow*>;
+  result res :: <C-boolean>;
+  c-name: "tickit_window_is_visible";
+end;
+
+define C-function tickit-window-top
+  input parameter win_ :: <TickitWindow*>;
+  result res :: <C-signed-int>;
+  c-name: "tickit_window_top";
+end;
+
+define C-function tickit-window-abs-top
+  input parameter win_ :: <TickitWindow*>;
+  result res :: <C-signed-int>;
+  c-name: "tickit_window_abs_top";
+end;
+
+define C-function tickit-window-left
+  input parameter win_ :: <TickitWindow*>;
+  result res :: <C-signed-int>;
+  c-name: "tickit_window_left";
+end;
+
+define C-function tickit-window-abs-left
+  input parameter win_ :: <TickitWindow*>;
+  result res :: <C-signed-int>;
+  c-name: "tickit_window_abs_left";
+end;
+
+define C-function tickit-window-lines
+  input parameter win_ :: <TickitWindow*>;
+  result res :: <C-signed-int>;
+  c-name: "tickit_window_lines";
+end;
+
+define C-function tickit-window-cols
+  input parameter win_ :: <TickitWindow*>;
+  result res :: <C-signed-int>;
+  c-name: "tickit_window_cols";
+end;
+
+define C-function tickit-window-bottom
+  input parameter win_ :: <TickitWindow*>;
+  result res :: <C-signed-int>;
+  c-name: "tickit_window_bottom";
+end;
+
+define C-function tickit-window-right
+  input parameter win_ :: <TickitWindow*>;
+  result res :: <C-signed-int>;
+  c-name: "tickit_window_right";
+end;
+
+define C-function tickit-window-resize
+  input parameter win_ :: <TickitWindow*>;
+  input parameter lines_ :: <C-signed-int>;
+  input parameter cols_ :: <C-signed-int>;
+  c-name: "tickit_window_resize";
+end;
+
+define C-function tickit-window-reposition
+  input parameter win_ :: <TickitWindow*>;
+  input parameter top_ :: <C-signed-int>;
+  input parameter left_ :: <C-signed-int>;
+  c-name: "tickit_window_reposition";
+end;
+
+define C-function tickit-window-set-geometry
+  input parameter win_ :: <TickitWindow*>;
+  input parameter top_ :: <C-signed-int>;
+  input parameter left_ :: <C-signed-int>;
+  input parameter lines_ :: <C-signed-int>;
+  input parameter cols_ :: <C-signed-int>;
+  c-name: "tickit_window_set_geometry";
+end;
+
+define C-function tickit-window-get-pen
+  input parameter win_ :: <TickitWindow*>;
+  result res :: <TickitPen*>;
+  c-name: "tickit_window_get_pen";
+end;
+
+define C-function tickit-window-set-pen
+  input parameter win_ :: <TickitWindow*>;
+  input parameter pen_ :: <TickitPen*>;
+  c-name: "tickit_window_set_pen";
+end;
+
+define C-function tickit-window-expose
+  input parameter win_ :: <TickitWindow*>;
+  input parameter exposed_ :: <TickitRect*>;
+  c-name: "tickit_window_expose";
+end;
+
+define C-function tickit-window-cursor-at
+  input parameter win_ :: <TickitWindow*>;
+  input parameter line_ :: <C-signed-int>;
+  input parameter col_ :: <C-signed-int>;
+  c-name: "tickit_window_cursor_at";
+end;
+
+define C-function tickit-window-cursor-visible
+  input parameter win_ :: <TickitWindow*>;
+  input parameter visible_ :: <C-boolean>;
+  c-name: "tickit_window_cursor_visible";
+end;
+
+define C-function tickit-window-cursor-shape
+  input parameter win_ :: <TickitWindow*>;
+  input parameter shape_ :: <TickitTermCursorShape>;
+  c-name: "tickit_window_cursor_shape";
+end;
+
+define C-function tickit-window-take-focus
+  input parameter win_ :: <TickitWindow*>;
+  c-name: "tickit_window_take_focus";
+end;
+
+define C-function tickit-window-is-focused
+  input parameter win_ :: <TickitWindow*>;
+  result res :: <C-boolean>;
+  c-name: "tickit_window_is_focused";
+end;
+
+define C-function tickit-window-set-focus-child-notify
+  input parameter win_ :: <TickitWindow*>;
+  input parameter notify_ :: <C-boolean>;
+  c-name: "tickit_window_set_focus_child_notify";
+end;
+
+define C-struct <TickitGeomchangeEventInfo>
+  sealed slot TickitGeomchangeEventInfo$rect :: <TickitRect>;
+end;
+
+define C-struct <TickitExposeEventInfo>
+  sealed slot TickitExposeEventInfo$rect :: <TickitRect>;
+  sealed slot TickitExposeEventInfo$rb :: <TickitRenderBuffer*>;
+end;
+
+define constant <TickitFocusEventType> = <C-int>;
+define constant $TICKIT-FOCUSEV-IN = 1;
+define constant $TICKIT-FOCUSEV-OUT = 2;
+
+define C-struct <TickitFocusEventInfo>
+  sealed slot TickitFocusEventInfo$type :: <TickitFocusEventType>;
+  sealed slot TickitFocusEventInfo$win :: <TickitWindow*>;
 end;
 
